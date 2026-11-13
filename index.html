@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>جدول الورديات</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b1f24;--mu:#6b7480;--bd:#dfe3e8;--ac:#1f6feb;--on:#d9f2e3;--ont:#126b3a;--off:#fde0e0;--offt:#a12626;--gr:#e3e5e8;--grt:#6b7480;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#121417;--card:#1c2026;--tx:#eceff3;--mu:#98a2ae;--bd:#2d333b;--ac:#4c8dff;--on:#17402b;--ont:#7fe0a8;--off:#4a1f1f;--offt:#ff9b9b;--gr:#2a2f36;--grt:#8b95a1;}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;padding:14px;max-width:720px;margin:auto;font-size:16px}
+h1{font-size:20px;margin:6px 0 14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:12px}
+label{display:block;font-size:14px;color:var(--mu);margin:0 0 6px}
+input[type=date]{width:100%;font:inherit;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:16px;margin-top:12px;align-items:end}
+.row>div{min-width:0}
+select{width:100%;font:inherit;padding:10px 6px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)}
+button{font:inherit;border:0;border-radius:12px;padding:13px;background:var(--ac);color:#fff;width:100%;font-weight:600;margin-top:14px}
+button.sec{background:var(--bg);color:var(--tx);border:1px solid var(--bd);margin-top:8px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:430px;font-size:13px}
+th,td{border:1px solid var(--bd);padding:7px 3px;text-align:center}
+th{background:var(--bg);font-weight:600}
+td.n{text-align:right;padding-right:8px;font-weight:600;white-space:nowrap}
+.on{background:var(--on);color:var(--ont)}
+.off{background:var(--off);color:var(--offt)}
+.gry{background:var(--gr);color:var(--grt)}
+td[onclick]{cursor:pointer;user-select:none}
+h2{font-size:16px;margin:0 0 10px}
+.err{color:var(--offt);font-size:14px;margin-top:10px}
+tr.cov td{color:var(--mu);font-size:12px}
+.emp{border:1px solid var(--bd);border-radius:12px;padding:10px;margin-bottom:8px;background:var(--bg)}
+.eh{display:flex;gap:6px;align-items:center}
+.eh .nm{flex:1;min-width:0;font:inherit;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx)}
+.eh .x{width:40px;margin:0;padding:10px;background:var(--off);color:var(--offt)}
+.dy{display:flex;gap:4px;margin-top:8px}
+.dc{flex:1;text-align:center;font-size:12px;padding:8px 0;border-radius:8px;border:1px solid var(--bd);background:var(--card);color:var(--mu);user-select:none}
+.dc.s1{background:var(--off);color:var(--offt);border-color:var(--offt)}
+.dc.s2{background:var(--on);color:var(--ont);border-color:var(--ont)}
+.ck{display:flex;gap:10px;align-items:center;color:var(--tx);font-size:15px;margin-bottom:14px}
+.ck input{width:22px;height:22px;flex:none}
+.sm{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;font-size:12px}
+.g{color:var(--ont);font-weight:700}
+.r{color:var(--offt);font-weight:700}
+.sm>span{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:5px 8px}
+.note{font-size:12px;color:var(--mu);margin-top:12px;line-height:1.6}
+input[type=date],select{height:46px;margin:0;padding:0 10px;-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center;display:block}
+input[type=date]::-webkit-date-and-time-value{text-align:center}
+</style>
+</head>
+<body>
+<h1>مُنظّم الورديات</h1>
+<div class="card">
+  <label class="ck"><input type="checkbox" id="exw" onchange="if(last){last.ex=this.checked;render(true)}"><span>إخفاء الجمعة والسبت عند الجميع (فاضية وما تدخل بالحساب)</span></label>
+  <label>الموظفين (اكتب الاسم واختر أيام الإجازة)</label>
+  <div id="emps"></div>
+  <button class="sec" onclick="addEmp()">➕ إضافة موظف</button>
+  <div class="note">اللون الأحمر 🔴 إجازة، واللون الأخضر 🟢 دوام.</div>
+  <div class="row">
+    
+    <div><label>بداية الأسبوع الأول (التاريخ)</label><input type="date" id="sd"></div>
+    <div><label>عدد الأسابيع</label><select id="wk"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+  </div>
+
+  <button onclick="gen()">إنشاء</button>
+  <div class="err" id="err"></div>
+  
+</div>
+<div id="out"></div>
+<div dir="ltr" style="text-align:center;color:var(--mu);opacity:.6;font-size:12px;margin:24px 0 8px">Programmed by: Alwaleed</div>
+
+<script>
+var D=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var S=["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"];
+var last=null;
+function addEmp(n){
+  var d=document.createElement("div");d.className="emp";
+  var h='<div class="eh"><input class="nm" placeholder="اسم الموظف" value="'+(n||"")+'"><button class="x" onclick="this.closest(\'.emp\').remove()">✕</button></div><div class="dy">';
+  S.forEach(function(x,i){h+='<span class="dc s2" data-s="2" data-d="'+i+'" onclick="cyc(this)">'+x+'</span>'});
+  d.innerHTML=h+"</div>";document.getElementById("emps").appendChild(d);
+}
+function cyc(e){var s=+e.dataset.s===1?2:1;e.dataset.s=s;e.className="dc s"+s}
+addEmp();
+function gen(){
+  var err=document.getElementById("err");err.textContent="";
+  var W=+document.getElementById("wk").value;
+  if(!(W>=1)){err.textContent="تأكد من عدد الأسابيع";return}
+  var names=[],offs=[],rows=document.querySelectorAll(".emp");
+  for(var i=0;i<rows.length;i++){
+    var nm=rows[i].querySelector(".nm").value.trim();if(!nm)continue;
+    var a=[];rows[i].querySelectorAll(".dc").forEach(function(e){if(e.dataset.s==="1")a.push(+e.dataset.d)});
+    names.push(nm);offs.push(a);
+  }
+  if(!names.length){err.textContent="اكتب اسم موظف واحد على الأقل";return}
+  var sch=[];
+  for(var w=0;w<W;w++)sch.push(names.map(function(_,p){return {o:offs[p].slice(),r:[],b:[]}}));
+  var sv=document.getElementById("sd").value,st=sv?new Date(+sv.slice(0,4),+sv.slice(5,7)-1,+sv.slice(8,10)):null;
+  last={names:names,s:sch,act:[0,1,2,3,4,5,6],start:st,sd:st?st.getDay():0,ex:document.getElementById("exw").checked};render();
+}
+function tg(w,p,d){
+  var e=last.s[w][p],o=e.o,b=e.b,i=o.indexOf(d),j=b.indexOf(d);
+  if(d>4){if(j>-1)b.splice(j,1);else if(i>-1){o.splice(i,1);b.push(d)}else o.push(d)}
+  else{if(i>-1)o.splice(i,1);else o.push(d)}
+  render(true);
+}
+var M=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+function dt(w,i){if(!last.start)return null;var t=last.start;return new Date(t.getFullYear(),t.getMonth(),t.getDate()+w*7+i)}
+function fd(t,y){return t.getDate()+" "+M[t.getMonth()]+(y?" "+t.getFullYear():"")}
+function wt(w){var a=dt(w,0);return a?"الأسبوع "+(w+1)+" ("+fd(a)+" – "+fd(dt(w,6),1)+")":"الأسبوع "+(w+1)}
+function isB(wk,p,d){return d>4&&(last.ex||wk[p].b.indexOf(d)>-1)}
+function cnt(wk,p){var o=0,b=0;for(var d=0;d<7;d++){if(isB(wk,p,d))b++;else if(wk[p].o.indexOf(d)>-1)o++}return {o:o,w:7-b-o}}
+function sm(wk){return '<div class="sm">'+last.names.map(function(nm,p){var c=cnt(wk,p);return "<span><b>"+nm.replace(/</g,"&lt;")+"</b>: <span class=\"g\">دوام "+c.w+"</span> | <span class=\"r\">إجازة "+c.o+"</span></span>"}).join("")+"</div>"}
+function render(keep){
+  var out=document.getElementById("out"),h='<div class="note" style="margin:0 0 10px">اضغط على أي خانة لتغييرها بين دوام وإجازة. الجمعة والسبت تتغير بين دوام ← إجازة ← فاضية.</div>';
+  last.s.forEach(function(wk,w){
+    h+='<div class="card"><h2>'+wt(w)+'</h2><div class="scroll"><table><tr><th>الاسم</th>';
+    for(var i=0;i<7;i++){var dd=(last.sd+i)%7,t=dt(w,i);h+="<th>"+S[dd]+(t?"<br><span style=\"font-weight:400;font-size:11px;color:var(--mu)\">"+t.getDate()+"/"+(t.getMonth()+1)+"</span>":"")+"</th>"}h+="</tr>";
+    var cov=[0,0,0,0,0,0,0],rc=[0,0,0,0,0,0,0];
+    last.names.forEach(function(nm,p){
+      h+='<tr><td class="n">'+nm.replace(/</g,"&lt;")+"</td>";
+      for(var i=0;i<7;i++){
+        var d=(last.sd+i)%7,off=wk[p].o.indexOf(d)>-1,cl=off?"off":"on";if(isB(wk,p,d)){h+='<td class="gry"'+(last.ex?"":' onclick="tg('+w+','+p+','+d+')"')+'></td>';continue}if(!off)cov[d]++;
+        h+='<td class="'+cl+'" onclick="tg('+w+','+p+','+d+')">'+(off?"إجازة":"دوام")+'</td>';
+      }
+      h+="</tr>";
+    });
+    h+='<tr class="cov"><td class="n"></td>'+[0,1,2,3,4,5,6].map(function(i){return"<td>"+((last.ex&&(last.sd+i)%7>4)?"":cov[(last.sd+i)%7])+"</td>"}).join("")+"</tr></table></div>"+sm(wk)+"</div>";
+  });
+  h+='<button onclick="share()">💾 حفظ الجدول PDF</button>';
+  out.innerHTML=h;if(!keep)out.scrollIntoView({behavior:"smooth"});
+}
+function pages(){
+  var W=1754,H=1240,R=W-40,NW=280,CW=(W-80-NW)/7,RH=52,out=[],cv,x,y;
+  function np(){cv=document.createElement("canvas");cv.width=W;cv.height=H;x=cv.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,W,H);x.direction="rtl";x.textBaseline="middle";out.push(cv);y=40}
+  function cell(l,r,t,bg,fg,al,bold){x.fillStyle=bg;x.fillRect(l,y,r-l,RH);x.strokeStyle="#c9ced6";x.lineWidth=1.5;x.strokeRect(l,y,r-l,RH);x.fillStyle=fg;x.font=(bold?"bold ":"")+"26px system-ui,Tahoma,Arial,sans-serif";x.textAlign=al;x.fillText(t,al==="center"?(l+r)/2:r-14,y+RH/2+1)}
+  function head(t,w){x.fillStyle="#1b1f24";x.font="bold 34px system-ui,Tahoma,Arial,sans-serif";x.textAlign="right";x.fillText(t,R,y+20);y+=50;
+    cell(R-NW,R,"الاسم","#eef0f3","#1b1f24","center",1);
+    for(var i=0;i<7;i++){var t=dt(w,i);cell(R-NW-(i+1)*CW,R-NW-i*CW,D[(last.sd+i)%7]+(t?" "+t.getDate()+"/"+(t.getMonth()+1):""),"#eef0f3","#1b1f24","center",1)}y+=RH}
+  np();
+  last.s.forEach(function(wk,w){
+    if(y+50+RH*3>H-30)np();
+    head(wt(w),w);
+    last.names.forEach(function(nm,p){
+      if(y+RH>H-30){np();head(wt(w)+" (تابع)",w)}
+      cell(R-NW,R,nm,"#fff","#1b1f24","right",1);
+      for(var i=0;i<7;i++){var d=(last.sd+i)%7,off=wk[p].o.indexOf(d)>-1,bg=isB(wk,p,d)?"#e3e5e8":(off?"#fde0e0":"#d9f2e3"),fg=isB(wk,p,d)?"#6b7480":(off?"#a12626":"#126b3a");
+        cell(R-NW-(i+1)*CW,R-NW-i*CW,(isB(wk,p,d)?"":off?"إجازة":"دوام"),bg,fg,"center",0)}
+      y+=RH});
+    var F="24px system-ui,Tahoma,Arial,sans-serif",ln=[],lw=0,SP="   •   ";
+    function segs(it){return [[it.n+": ","#1b1f24"],["دوام "+it.w,"#126b3a"],[" | ","#1b1f24"],["إجازة "+it.o,"#a12626"]]}
+    function iw(it){x.font=F;return segs(it).reduce(function(a,s){return a+x.measureText(s[0]).width},0)}
+    function flush(){if(!ln.length)return;if(y+36>H-30)np();x.font=F;x.textAlign="right";var xp=R;
+      ln.forEach(function(it,k){if(k){x.fillStyle="#1b1f24";x.fillText(SP,xp,y+18);xp-=x.measureText(SP).width}
+        segs(it).forEach(function(s){x.fillStyle=s[1];x.fillText(s[0],xp,y+18);xp-=x.measureText(s[0]).width})});
+      y+=36;ln=[];lw=0}
+    last.names.forEach(function(nm,p){var c=cnt(wk,p),it={n:nm,w:c.w,o:c.o};x.font=F;var w2=iw(it)+(ln.length?x.measureText(SP).width:0);
+      if(ln.length&&lw+w2>W-80){flush();w2=iw(it)}ln.push(it);lw+=w2});
+    flush();
+    y+=40;
+  });
+  return out;
+}
+function pdfFrom(cvs){
+  cvs.forEach(function(c){var g=c.getContext("2d");g.direction="ltr";g.textAlign="center";g.textBaseline="middle";g.fillStyle="#b4bac2";g.font="20px system-ui,Arial,sans-serif";g.fillText("Programmed by: Alwaleed",c.width/2,c.height-16)});
+  var enc=new TextEncoder(),ch=[],len=0,offs=[],n=cvs.length;
+  function put(v){var b=typeof v==="string"?enc.encode(v):v;ch.push(b);len+=b.length}
+  function obj(i,f){offs[i]=len;put(i+" 0 obj\n");f();put("\nendobj\n")}
+  put("%PDF-1.4\n");
+  var kids=[];for(var k=0;k<n;k++)kids.push((5+3*k)+" 0 R");
+  obj(1,function(){put("<</Type/Catalog/Pages 2 0 R>>")});
+  obj(2,function(){put("<</Type/Pages/Kids["+kids.join(" ")+"]/Count "+n+">>")});
+  cvs.forEach(function(c,k){
+    var bin=atob(c.toDataURL("image/jpeg",0.92).split(",")[1]),u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+    obj(3+3*k,function(){put("<</Type/XObject/Subtype/Image/Width "+c.width+"/Height "+c.height+"/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length "+u.length+">>\nstream\n");put(u);put("\nendstream")});
+    var cs="q 842 0 0 595 0 0 cm /Im0 Do Q";
+    obj(4+3*k,function(){put("<</Length "+cs.length+">>\nstream\n"+cs+"\nendstream")});
+    obj(5+3*k,function(){put("<</Type/Page/Parent 2 0 R/MediaBox[0 0 842 595]/Resources<</XObject<</Im0 "+(3+3*k)+" 0 R>>>>/Contents "+(4+3*k)+" 0 R>>")});
+  });
+  var tot=2+3*n,xr=len;
+  put("xref\n0 "+(tot+1)+"\n0000000000 65535 f \n");
+  for(var i=1;i<=tot;i++)put(("0000000000"+offs[i]).slice(-10)+" 00000 n \n");
+  put("trailer\n<</Size "+(tot+1)+"/Root 1 0 R>>\nstartxref\n"+xr+"\n%%EOF");
+  return new Blob(ch,{type:"application/pdf"});
+}
+async function share(){
+  var blob;
+  try{blob=pdfFrom(pages())}catch(e){alert("تعذر إنشاء الملف");return}
+  try{
+    var dl=window.claude?await claude.use("downloads"):null;
+    if(dl){await dl.save({filename:"shifts-schedule.pdf",data:blob});return}
+  }catch(e){if(e&&e.code==="declined")return}
+  var f=new File([blob],"shifts-schedule.pdf",{type:"application/pdf"});
+  try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return}}catch(e){if(e&&e.name==="AbortError")return}
+  var u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download="shifts-schedule.pdf";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(u)},3000);
+}
+</script>
+</body>
+</html>
